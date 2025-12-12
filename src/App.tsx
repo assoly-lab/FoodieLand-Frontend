@@ -1,10 +1,13 @@
+import Hero from "@/components/home/Hero"
+import { Navbar } from "@/components/shared/Navbar"
 
 function App() {
 
   return (
-      <div className="text-6xl font-lobster">
-        Foodieland!
-      </div>
+      <main className="w-full min-h-screen">
+        <Navbar />
+        <Hero />
+      </main>
   )
 }
 

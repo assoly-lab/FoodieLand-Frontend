@@ -42,6 +42,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --font-inter: var(--inter);
   --font-lobster: var(--lobster);
+  --color-hero: #E7FAFE;
 }
 
 :root {
