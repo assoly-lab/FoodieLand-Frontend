@@ -1,16 +1,39 @@
-import { useState } from "react"
-import { Menu, X, BarChart3 } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Menu, X, BarChart3, FolderOpen, UtensilsCrossed } from "lucide-react"
+import { Link, useLocation } from "react-router"
+import { useCategory } from "@/hooks/useCategory"
+import useRecipe from "@/hooks/useRecipe"
+import { useDashboard } from "@/hooks/useDashboard"
+import { useAuth } from "@/hooks/useAuth"
+import AuthorAvatar from "../ui/AuthorAvatar"
 
 export function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
-
-  const toggleMenu = () => setIsOpen(!isOpen)
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleMenu = () => setIsOpen(!isOpen);
+  const { categories } = useCategory();
+  const { recipes } = useRecipe();
+  const location = useLocation();
+  const { handleSetActiveSection, activeSection } = useDashboard();
+  const isDashboard = location.pathname?.startsWith("/dashboard")
+  const { user, isAuthenticated } = useAuth();
 
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/recipes", label: "Recipes" },
-    { href: "/about", label: "About" },
+    { href: "/categories", label: "Categories" },
+    { href: "/dashboard", label: "Dashboard" },
   ]
+  
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [isOpen])
 
   return (
     <nav className="w-full bg-white border-b border-black/10">
@@ -28,62 +51,167 @@ export function Navbar() {
           <div className="hidden md:flex items-center justify-center flex-1 px-8">
             <div className="flex gap-8">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.href}
-                  href={link.href}
+                  to={link.href}
                   className="text-gray-900 hover:text-orange-500 font-medium transition-colors font-inter"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <a
-              href="/admin"
+            {!isAuthenticated && 
+              <div className="flex gap-4">
+              <Link
+              to="/login"
               className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg transition-colors group"
               title="Admin Dashboard"
             >
-              <BarChart3 className="w-5 h-5 text-gray-900 group-hover:text-orange-500" />
-              <span className="text-sm font-inter text-gray-900 group-hover:text-orange-500 font-medium transition-colors">Dashboard</span>
-            </a>
+              <span className="text-sm font-inter text-gray-900 group-hover:text-orange-500 font-medium transition-colors">Login</span>
+            </Link>
+            <Link
+              to="/signup"
+              className="hidden bg-orange-500 text-white py-3 px-4 rounded-xl hover:bg-orange-600 transition-colors text-center font-medium md:inline-block"
+            >
+              Sign Up
+            </Link>
+            </div>
+            }
+            
+            {isAuthenticated && user &&
+             <AuthorAvatar authorName={user.name} avatarUrl={user.avatar} /> 
+              
+            }
+            
 
             <button
               onClick={toggleMenu}
-              className="md:hidden flex items-center justify-center w-10 h-10 rounded-md hover:bg-gray-100 transition-colors"
+              className="md:hidden relative flex items-center justify-center w-10 h-10 rounded-md hover:bg-gray-100 transition-colors z-60"
               aria-label="Toggle menu"
             >
-              {isOpen ? <X className="w-6 h-6 text-gray-900" /> : <Menu className="w-6 h-6 text-gray-900" />}
+              {isOpen ? <X className="w-6 h-6 text-red-500" /> : <Menu className="w-6 h-6 text-gray-900" />}
             </button>
           </div>
         </div>
-        
-        
         {/*Mobile nav*/}
-        {isOpen && (
-          <div className="md:hidden pb-4 border-t border-gray-200">
-            <div className="flex flex-col gap-2 pt-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="block px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ))}
-              <a
-                href="/admin"
-                className="flex items-center gap-2 px-3 py-2 rounded-md text-gray-700 font-medium transition-colors font-inter"
-                onClick={() => setIsOpen(false)}
-              >
-                <BarChart3 className="w-5 h-5" />
-                Dashboard
-              </a>
-            </div>
+        <div
+          className={`fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity duration-300 ${
+            isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+          onClick={() => setIsOpen(false)}
+        />
+  
+        <div
+          className={`fixed top-0 right-0 h-full w-72 bg-background z-40 md:hidden transform transition-transform duration-300 ease-in-out shadow-2xl ${
+            isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="flex flex-col h-full pt-20 px-6">
+            {isDashboard ? (
+              <>
+                <nav className="flex flex-col gap-2">
+                  <button
+                    onClick={() => {
+                      handleSetActiveSection("categories")
+                      setIsOpen(false)
+                    }}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${
+                      activeSection === "categories" ? "bg-orange-500 text-white" : "text-foreground hover:bg-slate-50"
+                    }`}
+                  >
+                    <FolderOpen className="h-5 w-5" />
+                    <span className="font-medium">Categories</span>
+                    <span
+                      className={`ml-auto text-sm ${activeSection === "categories" ? "bg-white/20" : "bg-slate-200"} px-2 py-0.5 rounded-full`}
+                    >
+                      {categories?.length ?? 0}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleSetActiveSection("recipes")
+                      setIsOpen(false)
+                    }}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${
+                      activeSection === "recipes" ? "bg-orange-500 text-white" : "text-foreground hover:bg-slate-50"
+                    }`}
+                  >
+                    <UtensilsCrossed className="h-5 w-5" />
+                    <span className="font-medium">Recipes</span>
+                    <span
+                      className={`ml-auto text-sm ${activeSection === "recipes" ? "bg-white/20" : "bg-slate-200"} px-2 py-0.5 rounded-full`}
+                    >
+                      {recipes?.length ?? 0}
+                    </span>
+                  </button>
+                </nav>
+                <div className="mt-auto pb-8">
+                  <Link
+                    to="/"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-2 text-foreground hover:text-hero hover:bg-orange-50 transition-colors py-3 px-4 rounded-xl"
+                  >
+                    <BarChart3 className="h-5 w-5" />
+                    <span>Back to Home</span>
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <>
+                <nav className="flex flex-col gap-2 border-b-border/40 my-4">
+                  <Link
+                    to="/"
+                    onClick={() => setIsOpen(false)}
+                    className="text-black hover:text-orange-500 transition-colors py-3 px-4 rounded-xl font-medium"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/recipes"
+                    onClick={() => setIsOpen(false)}
+                    className="text-black hover:text-orange-500 transition-colors py-3 px-4 rounded-xl"
+                  >
+                    Recipes
+                  </Link>
+                  <Link
+                    to="/categories"
+                    onClick={() => setIsOpen(false)}
+                    className="text-black hover:text-orange-500 transition-colors py-3 px-4 rounded-xl"
+                  >
+                    Categories
+                  </Link>
+                  <div className="pb-8">
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-2 text-foreground hover:bg-slate-50 transition-colors py-3 px-4 rounded-xl"
+                    >
+                      Dashboard
+                    </Link>
+                  </div>
+                </nav>
+                <div className="flex flex-col gap-2">
+                  <Link
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="text-black hover:text-orange-500 transition-colors py-3 px-4 rounded-xl font-medium"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    onClick={() => setIsOpen(false)}
+                    className="bg-orange-500 text-white py-3 px-4 rounded-xl hover:bg-orange-600 transition-colors text-center font-medium"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </nav>
   )
