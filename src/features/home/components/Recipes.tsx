@@ -14,7 +14,7 @@ export default function HighlightedRecipes() {
           tempor incididunt ut labore et dolore magna aliqut enim ad minim{" "}
         </p>
       </div>
-     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
+     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center ">
        {recipes && recipes?.length > 0 && recipes.slice(0,9).map(recipe => {
          return(
            <RecipeCard key={recipe._id} recipe={recipe} />

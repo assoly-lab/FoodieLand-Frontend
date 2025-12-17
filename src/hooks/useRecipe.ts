@@ -92,7 +92,7 @@ export default function useRecipe() {
     dispatch(setIsRecipeFormOpen(false))
   }
   
-  const handleFilterRecipes = async (filters: Partial<RecipeFilters>) => {
+  const handleRecipeFilters = async (filters: Partial<RecipeFilters>) => {
     dispatch(setRecipeFilters(filters));
   };
   
@@ -117,6 +117,6 @@ export default function useRecipe() {
     handleCloseRecipeDeleteModal,
     handleConfirmDeleteRecipe,
     handleCloseForm,
-    handleFilterRecipes,
+    handleRecipeFilters,
   };
 }
