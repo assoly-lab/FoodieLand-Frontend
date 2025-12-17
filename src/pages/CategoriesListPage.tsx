@@ -14,6 +14,12 @@ export default function CategoriesListPage() {
   const dispatch = useAppDispatch();
   const { categories, isLoading, filters, handleSetCategoryFilters } = useCategory();
   
+  useEffect(()=>{
+    return() => {
+      handleSetCategoryFilters({ search: ""})
+    }
+  },[])
+  
   useEffect(()=> {
     dispatch(loadCategories());
   }, [filters.search])
@@ -54,27 +60,23 @@ export default function CategoriesListPage() {
             > Reset Filters 
             </Button>
           </div>
-
           <div className="flex items-center justify-between my-8">
             <p className="text-muted-foreground">
               {categories?.length ?? 0 } categor{categories?.length !== 1 ? "ies" : "y"} found
             </p>
           </div>
-          
           {isLoading &&
             <RecipeLoader />
           }
-          { !isLoading && categories && categories.length &&
+          { !isLoading && categories && categories.length > 0 &&
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 place-items-center ">
             {categories?.map((category) => (
               <CategoryCard key={category._id} category={category} />
             ))}
           </div>
           }
-          
           {!isLoading && (!categories || categories.length  === 0) &&
             <p className="text-center text-red-500 font-semibold text-2xl">No categories found!</p>
-            
           }
         </section>
       </main>

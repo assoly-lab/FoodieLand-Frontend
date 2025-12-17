@@ -21,7 +21,20 @@ import { useEffect } from "react";
 export default function RecipesListPage() {
   const dispatch = useAppDispatch();
   const { recipes, isLoading, filters, handleRecipeFilters } = useRecipe();
-  const { categories } = useCategory();
+  const { categories, handleLoadCategories } = useCategory();
+  
+  useEffect(() => {
+    if(!categories || categories.length === 0) {
+      handleLoadCategories()
+    }
+    
+    return()=>{
+      handleRecipeFilters({
+        search: "",
+        category: ""
+      })
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(loadRecipes());
@@ -90,9 +103,9 @@ export default function RecipesListPage() {
             {recipes?.length ?? 0} recipe{recipes?.length !== 1 ? "s" : ""}{" "}
             found
           </p>
-
+          
           {isLoading && <RecipeLoader />}
-          {!isLoading && recipes && recipes.length && (
+          {!isLoading && recipes && recipes.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center ">
               {recipes?.map((recipe) => (
                 <RecipeCard key={recipe._id} recipe={recipe} />

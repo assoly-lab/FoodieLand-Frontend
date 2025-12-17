@@ -30,7 +30,7 @@ export default function RecipeSteps({ recipe }: { recipe: Recipe }) {
   };
   return (
     <div className="mt-16">
-      <div className="flex flex-col gap-8 lg:flex-row">
+      <div className="flex flex-col gap-6 lg:flex-row">
         <div className="lg:flex-2/3">
           <div>
             <p className="font-semibold text-4xl mb-8">Ingredients</p>
@@ -85,7 +85,7 @@ export default function RecipeSteps({ recipe }: { recipe: Recipe }) {
               const stepStyle = `font-semibold text-2xl mb-4 text-black ${isChecked ? "line-through opacity-60" : ""}`;
               const descriptionStepStyle = `font-normal text-base mb-4 text-muted-foreground leading-6 ${isChecked ? "line-through opacity-60" : ""}`;
               return (
-                <div key={step.order} className="flex gap-4 items-start">
+                <div key={step.order} className="flex gap-4 items-start py-4">
                   <button
                     type="button"
                     onClick={() => handleDirectionCheckChange(step.order)}
@@ -109,7 +109,7 @@ export default function RecipeSteps({ recipe }: { recipe: Recipe }) {
                       <img
                         src={step.image.url || "/placeholder.svg"}
                         alt={`Step ${step.order}`}
-                        className="mt-2 w-full max-w-xs h-32 rounded-lg object-cover"
+                        className="mt-2 lg:w-full h-64 w-[90%] md:h-80 md:w-[95%] lg:h-96 rounded-lg object-cover"
                       />
                     )}
                   </div>
@@ -118,7 +118,8 @@ export default function RecipeSteps({ recipe }: { recipe: Recipe }) {
             })}
           </div>
         </div>
-        <div className="lg:flex-1/3">
+        <div className="lg:flex-1/3 flex flex-col gap-8">
+          <h2 className="text-4xl font-semibold">Other Recipes</h2>
           {otherRecipes && otherRecipes.length && <OtherRecipes recipes={otherRecipes} />}
         </div>
       </div>
