@@ -66,6 +66,7 @@ export interface RecipeState {
   isDeleteModalOpen: boolean;
   selectedRecipe: Recipe | null;
   recipeDetails: Recipe | null;
+  filters: RecipeFilters;
   isLoading: boolean;
   error: string | null;
 }
@@ -94,4 +95,9 @@ export interface RecipeImageFiles {
 export interface RecipeFormProps {
   initialData?: Recipe | null;
   
+}
+
+export interface RecipeFilters {
+    search: string,
+    category: string
 }

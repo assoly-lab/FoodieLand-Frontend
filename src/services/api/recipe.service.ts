@@ -1,10 +1,12 @@
 import { api } from '@/lib/axios';
-import type { ApiCreateResponse, ApiDeleteResponse, ApiDetailsResponse, ApiListResponse, ApiUpdateResponse } from '@/types/shared/Api';
-import type { Recipe } from '@/types/shared/Recipe';
+import { sanitizeQueryParams } from '@/lib/utils';
+import type { ApiCreateResponse, ApiDeleteResponse, ApiDetailsResponse, ApiListResponse, ApiUpdateResponse, FilterOptions } from '@/types/shared/Api';
+import type { Recipe, RecipeFilters } from '@/types/shared/Recipe';
 
 export const recipeService = {
-  loadRecipes: async (): Promise<ApiListResponse<Recipe>> => {
-    const { data } = await api.get<ApiListResponse<Recipe>>('/recipes');
+  loadRecipes: async (filters?: RecipeFilters): Promise<ApiListResponse<Recipe>> => {
+    const params = sanitizeQueryParams(filters as FilterOptions);
+    const { data } = await api.get<ApiListResponse<Recipe>>('/recipes', { params });
     return data;
   },
   

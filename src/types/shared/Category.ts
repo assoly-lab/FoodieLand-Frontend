@@ -21,6 +21,7 @@ export interface CategoryState {
   isFormOpen: boolean;
   isDeleteModalOpen: boolean;
   selectedCategory: Category | null;
+  filters: CategoryFilters;
   isLoading: boolean;
   error: string | null;
 }
@@ -34,4 +35,8 @@ export interface CategoryFormValues {
 export interface CategoryFormProps {
   initialData?: Category | null;
   
+}
+
+export interface CategoryFilters {
+  search: string;
 }

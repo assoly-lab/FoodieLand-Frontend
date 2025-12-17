@@ -1,11 +1,11 @@
-import { setCategoryAction, setIsCategoryFormOpen, setIsDeleteModalOpen, setSelectedCategory } from "@/store/category/CategorySlice";
+import { setCategoryAction, setCategoryFilters, setIsCategoryFormOpen, setIsDeleteModalOpen, setSelectedCategory } from "@/store/category/CategorySlice";
 import { createCategory, deleteCategory, loadCategories, updateCategory } from "@/store/category/CategoryThunk";
 import { useAppDispatch, useAppSelector } from "@/store/hooks/hooks";
-import type { Category } from "@/types/shared/Category";
+import type { Category, CategoryFilters } from "@/types/shared/Category";
 
 export function useCategory() {
   const dispatch = useAppDispatch();
-  const { categories, selectedCategory, error, isLoading, action, isFormOpen, isDeleteModalOpen } = useAppSelector(
+  const { categories, selectedCategory, error, isLoading, action, isFormOpen, isDeleteModalOpen, filters } = useAppSelector(
     (state) => state.category,
   );
 
@@ -67,6 +67,10 @@ export function useCategory() {
     dispatch(setIsCategoryFormOpen(false))
   }
   
+  const handleSetCategoryFilters = async (filters: CategoryFilters) =>{
+    dispatch(setCategoryFilters(filters))
+  }
+  
   return {
     categories,
     selectedCategory,
@@ -74,6 +78,7 @@ export function useCategory() {
     isLoading,
     action,
     isFormOpen,
+    filters,
     isDeleteModalOpen,
     handleLoadCategories,
     handleViewCategory,
@@ -84,6 +89,7 @@ export function useCategory() {
     handleConfirmDeleteCategory,
     handleCloseViewCategory,
     handleCloseCategoryDeleteModal,
-    handleCloseForm
+    handleCloseForm,
+    handleSetCategoryFilters
   };
 }

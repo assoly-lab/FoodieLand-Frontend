@@ -4,12 +4,15 @@ import type { Recipe } from "@/types/shared/Recipe";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
+import type { RootState } from "../store";
 
 export const loadRecipes = createAsyncThunk<ApiListResponse<Recipe>, void, { rejectValue: ApiErrorResponse }>(
   'Recipe/loadRecipes',
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
     try {
-      const response = await recipeService.loadRecipes();
+      const state = getState() as RootState;
+      const { filters } = state.recipe;
+      const response = await recipeService.loadRecipes(filters);
 
       toast.success('Successfully loaded recipes!');
       return response;

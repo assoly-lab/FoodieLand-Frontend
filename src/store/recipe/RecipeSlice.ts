@@ -1,7 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import type { ApiCreateResponse, ApiDetailsResponse, ApiListResponse, ApiUpdateResponse } from "@/types/shared/Api";
-import type { Recipe, RecipeAction, RecipeState } from "@/types/shared/Recipe";
+import type { Recipe, RecipeAction, RecipeFilters, RecipeState } from "@/types/shared/Recipe";
 import { createRecipe, deleteRecipe, loadRecipe, loadRecipes, updateRecipe } from "./RecipeThunk";
 
 const initialState: RecipeState = {
@@ -12,6 +12,10 @@ const initialState: RecipeState = {
   isDeleteModalOpen: false,
   selectedRecipe: null,
   recipeDetails: null,
+  filters: {
+    search: '',
+    category: ''
+  },
   isLoading: false,
   error: null,
 };
@@ -31,6 +35,15 @@ const recipeSlice = createSlice({
     },
     setIsRecipeDeleteModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isDeleteModalOpen = action.payload;
+    },
+    setRecipeSearch: (state, action: PayloadAction<string>) => {
+      state.filters.search = action.payload;
+    },
+    setRecipeCategory: (state, action: PayloadAction<string>) => {
+      state.filters.category = action.payload;
+    },
+    setRecipeFilters: (state, action: PayloadAction<Partial<RecipeFilters>>) => {
+      state.filters = { ...state.filters, ...action.payload };
     }
   },
   extraReducers: (builder) => {
@@ -47,7 +60,7 @@ const recipeSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload?.error as string;
     });
-    
+
     builder.addCase(loadRecipe.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -114,6 +127,14 @@ const recipeSlice = createSlice({
   },
 });
 
-export const { setSelectedRecipe, setRecipeAction, setIsRecipeFormOpen, setIsRecipeDeleteModalOpen } = recipeSlice.actions;
+export const {
+  setSelectedRecipe,
+  setRecipeAction,
+  setIsRecipeFormOpen,
+  setIsRecipeDeleteModalOpen,
+  setRecipeSearch,
+  setRecipeCategory,
+  setRecipeFilters 
+} = recipeSlice.actions;
 
 export default recipeSlice.reducer;

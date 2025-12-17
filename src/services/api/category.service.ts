@@ -1,10 +1,13 @@
 import { api } from '@/lib/axios';
-import type { ApiCreateResponse, ApiDeleteResponse, ApiListResponse, ApiUpdateResponse } from '@/types/shared/Api';
-import type { Category } from '@/types/shared/Category';
+import { sanitizeQueryParams } from '@/lib/utils';
+import type { ApiCreateResponse, ApiDeleteResponse, ApiListResponse, ApiUpdateResponse, FilterOptions } from '@/types/shared/Api';
+import type { Category, CategoryFilters } from '@/types/shared/Category';
 
 export const categoryService = {
-  loadCategories: async (): Promise<ApiListResponse<Category>> => {
-    const { data } = await api.get<ApiListResponse<Category>>('/categories');
+  loadCategories: async (filters?: CategoryFilters): Promise<ApiListResponse<Category>> => {
+    
+    const sanitizedFilters = sanitizeQueryParams(filters as FilterOptions)
+    const { data } = await api.get<ApiListResponse<Category>>('/categories', { params: sanitizedFilters });
     return data;
   },
 

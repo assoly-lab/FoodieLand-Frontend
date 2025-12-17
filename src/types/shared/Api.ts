@@ -36,3 +36,8 @@ export interface ApiDeleteResponse {
   success: boolean;
   message: string;
 }
+
+export interface FilterOptions {
+  search?: string;
+  category?: string;
+}

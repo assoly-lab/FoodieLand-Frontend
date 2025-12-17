@@ -3,6 +3,7 @@ import {
   setIsRecipeDeleteModalOpen,
   setIsRecipeFormOpen,
   setRecipeAction,
+  setRecipeFilters,
   setSelectedRecipe,
 } from "@/store/recipe/RecipeSlice";
 import {
@@ -11,7 +12,7 @@ import {
   loadRecipes,
   updateRecipe,
 } from "@/store/recipe/RecipeThunk";
-import type { Recipe } from "@/types/shared/Recipe";
+import type { Recipe, RecipeFilters } from "@/types/shared/Recipe";
 
 export default function useRecipe() {
   const dispatch = useAppDispatch();
@@ -25,6 +26,7 @@ export default function useRecipe() {
     isFormOpen,
     isLoading,
     error,
+    filters
   } = useAppSelector((state) => state.recipe);
 
   const handleLoadRecipes = async () => {
@@ -90,6 +92,10 @@ export default function useRecipe() {
     dispatch(setIsRecipeFormOpen(false))
   }
   
+  const handleFilterRecipes = async (filters: Partial<RecipeFilters>) => {
+    dispatch(setRecipeFilters(filters));
+  };
+  
   return {
     recipes,
     selectedRecipe,
@@ -100,6 +106,7 @@ export default function useRecipe() {
     isFormOpen,
     isLoading,
     error,
+    filters,
     handleLoadRecipes,
     handleViewRecipe,
     handleCloseViewRecipe,
@@ -110,5 +117,6 @@ export default function useRecipe() {
     handleCloseRecipeDeleteModal,
     handleConfirmDeleteRecipe,
     handleCloseForm,
+    handleFilterRecipes,
   };
 }

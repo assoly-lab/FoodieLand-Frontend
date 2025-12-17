@@ -4,12 +4,15 @@ import type { Category } from "@/types/shared/Category";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
+import type { RootState } from "../store";
 
 export const loadCategories = createAsyncThunk<ApiListResponse<Category>, void, { rejectValue: ApiErrorResponse }>(
   'Category/loadCategories',
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
     try {
-      const response = await categoryService.loadCategories();
+      const state = getState() as RootState;
+      const { filters } = state.category;
+      const response = await categoryService.loadCategories(filters);
 
       toast.success('Successfully loaded categories!');
       return response;

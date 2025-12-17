@@ -1,15 +1,17 @@
 import Footer from "@/components/shared/Footer";
 import { Navbar } from "@/components/shared/Navbar";
 import CategoryCard from "@/components/ui/category/CategoryCard";
+import { Input } from "@/components/ui/input";
 import RecipeLoader from "@/components/ui/recipe/RecipeLoader";
 import { useCategory } from "@/hooks/useCategory";
 import { loadCategories } from "@/store/category/CategoryThunk";
 import { useAppDispatch } from "@/store/hooks/hooks";
+import { Search } from "lucide-react";
 import { useEffect } from "react";
 
 export default function CategoriesListPage() {
   const dispatch = useAppDispatch();
-  const { categories, isLoading } = useCategory();
+  const { categories, isLoading, filters, handleSetCategoryFilters } = useCategory();
   
   useEffect(()=> {
     dispatch(loadCategories());
@@ -31,6 +33,18 @@ export default function CategoriesListPage() {
           </div>
         </section>
         <section className="mx-auto px-4 md:px-8 lg:px-16 py-12">
+          <div className="relative flex-1 w-full md:w-auto">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+                type="text"
+                placeholder="Search by title or description..."
+                className="pl-10 w-full md:w-80 bg-white"
+                value={filters.search}
+                onChange={(e) => {
+                    handleSetCategoryFilters({ search: e.target.value });
+                }}
+            />
+          </div>
           <div className="flex items-center justify-between mb-8">
             <p className="text-muted-foreground">
               {categories?.length ?? 0 } categor{categories?.length !== 1 ? "ies" : "y"} found

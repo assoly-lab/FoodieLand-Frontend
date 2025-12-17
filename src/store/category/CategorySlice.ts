@@ -1,4 +1,4 @@
-import type { Category, CategoryAction, CategoryState } from "@/types/shared/Category";
+import type { Category, CategoryAction, CategoryFilters, CategoryState } from "@/types/shared/Category";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import { createCategory, deleteCategory, loadCategories, updateCategory } from "@/store/category/CategoryThunk";
@@ -10,6 +10,9 @@ const initialState: CategoryState = {
   isFormOpen: false,
   isDeleteModalOpen: false,
   selectedCategory: null,
+  filters: {
+    search: ""
+  },
   isLoading: false,
   error: null,
 };
@@ -29,6 +32,9 @@ const categorySlice = createSlice({
     },
     setIsDeleteModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isDeleteModalOpen = action.payload;
+    },
+    setCategoryFilters: (state, action: PayloadAction<CategoryFilters>) => {
+      state.filters = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -97,6 +103,6 @@ const categorySlice = createSlice({
   },
 });
 
-export const { setSelectedCategory, setCategoryAction, setIsCategoryFormOpen, setIsDeleteModalOpen } = categorySlice.actions;
+export const { setSelectedCategory, setCategoryAction, setIsCategoryFormOpen, setIsDeleteModalOpen, setCategoryFilters } = categorySlice.actions;
 
 export default categorySlice.reducer;
